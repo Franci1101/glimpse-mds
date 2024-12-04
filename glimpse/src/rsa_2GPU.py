@@ -31,6 +31,7 @@ def load_checkpoint(filename="checkpoint.pkl"):
         return checkpoint['index'], checkpoint['results']
     return 0, []
 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str, default="google/pegasus-arxiv")
@@ -44,6 +45,7 @@ def parse_args():
 
     parser.add_argument("--device", type=str, default="cuda")
 
+    parser.add_argument("--checkpoint", type=str, default=None, help="Path to a checkpoint to resume from")
     return parser.parse_args()
 
 
@@ -120,7 +122,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0
 
 def main():
     args = parse_args()
-
+    
     start_index, partial_results = load_checkpoint("checkpoint.pkl")
 
     if args.filter is not None:
