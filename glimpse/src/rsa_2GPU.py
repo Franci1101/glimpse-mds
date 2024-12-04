@@ -6,6 +6,7 @@ import argparse
 from tqdm import tqdm
 import torch
 from torch.nn import DataParallel
+import pickle
 
 from pickle import dump
 
@@ -18,6 +19,17 @@ from rsasumm.rsa_reranker import RSAReranking
 DESC = """
 Compute the RSA matrices for all the set of multi-document samples and dump these along with additional information in a pickle file.
 """
+
+def save_checkpoint(current_index, results, filename="checkpoint.pkl"):
+    with open(filename, "wb") as f:
+        pickle.dump({'index': current_index, 'results': results}, f)
+
+def load_checkpoint(filename="checkpoint.pkl"):
+    if Path(filename).exists():
+        with open(filename, "rb") as f:
+            checkpoint = pickle.load(f)
+        return checkpoint['index'], checkpoint['results']
+    return 0, []
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -53,9 +65,12 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0):
     results = []
-    for name, group in tqdm(summaries.groupby(["id"])):
+    grouped = list(summaries.groupby(["id"]))
+
+    for i in tqdm(range(start_index, len(grouped))):
+        name, group = grouped[i]
         rsa_reranker = RSAReranking(
             model,
             tokenizer,
@@ -81,29 +96,37 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
         results.append(
             {
                 "id": name,
-                "best_rsa": best_rsa,  # best speaker score
-                "best_base": best_base,  # naive baseline
-                "speaker_df": speaker_df,  # all speaker results
-                "listener_df": listener_df,  # all listener results (chances of guessing correctly)
+                "best_rsa": best_rsa,
+                "best_base": best_base,
+                "speaker_df": speaker_df,
+                "listener_df": listener_df,
                 "initial_listener": initial_listener,
                 "language_model_proba_df": language_model_proba_df,
                 "initial_consensuality_scores": initial_consensuality_scores,
-                "consensuality_scores": consensuality_scores,  # uniqueness scores
+                "consensuality_scores": consensuality_scores,
                 "gold": gold,
-                "rationality": 3,  # hyperparameter
-                "text_candidates" : group
+                "rationality": 3,
+                "text_candidates": group,
             }
         )
 
+        # Salva checkpoint ogni 50 iterazioni
+        if (i + 1) % 50 == 0:
+            save_checkpoint(i + 1, results, "checkpoint.pkl")
+
     return results
+
 
 
 def main():
     args = parse_args()
 
+    start_index, partial_results = load_checkpoint("checkpoint.pkl")
+
     if args.filter is not None:
         if args.filter not in args.summaries.stem:
             return
+
 
     # load the model and the tokenizer
     model = AutoModelForSeq2SeqLM.from_pretrained(args.model_name)
@@ -125,7 +148,7 @@ def main():
     summaries = parse_summaries(args.summaries)
 
     # rerank the summaries
-    results = compute_rsa(summaries, model, tokenizer, args.device)
+    results = compute_rsa(summaries, model, tokenizer, args.device, start_index)
     results = {"results": results}
 
     results["metadata/reranking_model"] = args.model_name
@@ -141,7 +164,10 @@ def main():
 
     with open(output_path, "wb") as f:
         dump(results, f)
-        
+
+    # Rimuovi il checkpoint una volta completato il processo
+    Path("checkpoint.pkl").unlink(missing_ok=True)
+    
     # in case of scripted run, print the output path
     if args.scripted_run: print(output_path)
 
