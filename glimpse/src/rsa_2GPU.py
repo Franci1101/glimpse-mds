@@ -112,10 +112,15 @@ def main():
     else:
         tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 
-    model = model.to(args.device)
-    # Dopo aver caricato il modello
+    # load the model and the tokenizer
     model = AutoModelForSeq2SeqLM.from_pretrained(args.model_name)
-    model = DataParallel(model, device_ids=[0, 1]).to("cuda")
+    
+    # Se vuoi utilizzare DataParallel per eseguire su più GPU
+    model = DataParallel(model).to(args.device)
+    
+    # Se NON vuoi usare DataParallel (e hai solo una GPU o CPU), usa solo questa riga:
+    # model = model.to(args.device)
+
     # load the summaries
     summaries = parse_summaries(args.summaries)
 
