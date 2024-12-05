@@ -123,7 +123,10 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0
 def main():
     args = parse_args()
     
-    start_index, partial_results = load_checkpoint("checkpoint.pkl")
+    start_index, partial_results = load_checkpoint(args.checkpoint)
+    print(f"Ripartendo da indice: {start_index}")
+
+
 
     if args.filter is not None:
         if args.filter not in args.summaries.stem:
