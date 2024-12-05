@@ -31,6 +31,24 @@ def load_checkpoint(filename="checkpoint.pkl"):
         return checkpoint['index'], checkpoint['results']
     return 0, []
 
+def extract_relevant_data(results):
+    extracted_data = []
+    for res in results:
+        extracted_data.append({
+            "id": res["id"],
+            "best_rsa": res["best_rsa"],
+            "best_base": res["best_base"],
+            "gold": res["gold"],
+            "rationality": res["rationality"],
+            "initial_consensuality_scores": res["initial_consensuality_scores"],
+            "consensuality_scores": res["consensuality_scores"],
+            "language_model_proba": res["language_model_proba_df"].to_json(),  # Salva come JSON per compatibilità
+            "speaker_df": res["speaker_df"].to_json(),  # Convertiamo DataFrame complessi in stringhe JSON
+            "listener_df": res["listener_df"].to_json(),
+            "initial_listener": res["initial_listener"].to_json(),
+        })
+    return extracted_data
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -172,6 +190,16 @@ def main():
 
     # Rimuovi il checkpoint una volta completato il processo
     Path("checkpoint.pkl").unlink(missing_ok=True)
+    
+    # Aggiunta di salvataggio in CSV
+    # Appiattiamo i risultati per il salvataggio in CSV
+    relevant_data = extract_relevant_data(results["results"])
+    results_df = pd.DataFrame(relevant_data)
+    
+    # Salvataggio del CSV
+    results_df.to_csv(Path(args.output_dir) / "rsa_results_glimpse.csv", index=False)
+
+
     
     # in case of scripted run, print the output path
     if args.scripted_run: print(output_path)
