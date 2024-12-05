@@ -150,6 +150,8 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_i
         if (i + 1) % 50 == 0:
             save_checkpoint(i + 1, results, "checkpoint.pkl")
 
+        torch.cuda.empty_cache()
+
     # Salva gli eventuali risultati rimanenti alla fine
     if results:
         append_results_to_csv(results, output_csv)
