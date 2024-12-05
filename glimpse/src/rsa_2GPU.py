@@ -94,7 +94,7 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_index=0, save_every=30, output_csv="rsa_results.csv"):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_index=0, save_every=10, output_csv="rsa_results.csv"):
     results = []
     grouped = list(summaries.groupby(["id"]))
 
@@ -147,7 +147,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_i
             print("file uploaded")
 
         # Salva checkpoint ogni 50 iterazioni
-        if (i + 1) % 50 == 0:
+        if (i + 1) % 30 == 0:
             save_checkpoint(i + 1, results, "checkpoint.pkl")
 
         torch.cuda.empty_cache()
