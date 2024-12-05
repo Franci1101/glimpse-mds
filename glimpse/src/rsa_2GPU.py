@@ -49,6 +49,15 @@ def extract_relevant_data(results):
         })
     return extracted_data
 
+def append_results_to_csv(results, filename):
+    relevant_data = extract_relevant_data(results)
+    results_df = pd.DataFrame(relevant_data)
+    
+    # Append al file esistente senza riscrivere l'intestazione
+    results_df.to_csv(filename, mode='a', header=not Path(filename).exists(), index=False)
+    
+    print(f"Aggiunti {len(results)} risultati al file {filename}.")
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -85,7 +94,7 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0, save_every=50, output_csv="rsa_results.csv"):
     results = []
     grouped = list(summaries.groupby(["id"]))
 
@@ -130,11 +139,21 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0
             }
         )
 
+        # Ogni `save_every` iterazioni, salva i risultati parziali e libera memoria
+        if (i + 1) % save_every == 0:
+            append_results_to_csv(results, output_csv)
+            results = []  # Libera memoria
+
         # Salva checkpoint ogni 50 iterazioni
         if (i + 1) % 50 == 0:
             save_checkpoint(i + 1, results, "checkpoint.pkl")
 
+    # Salva gli eventuali risultati rimanenti alla fine
+    if results:
+        append_results_to_csv(results, output_csv)
+
     return results
+
 
 
 
