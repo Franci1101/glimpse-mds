@@ -94,7 +94,7 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0, save_every=50, output_csv="rsa_results.csv", save):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_index=0, save_every=50, output_csv="rsa_results.csv"):
     results = []
     grouped = list(summaries.groupby(["id"]))
 
@@ -195,7 +195,7 @@ def main():
     summaries = parse_summaries(args.summaries)
 
     # rerank the summaries
-    results = compute_rsa(summaries, model, tokenizer, args.device, start_index, save)
+    results = compute_rsa(summaries, model, tokenizer, args.device, save, start_index)
     results = {"results": results}
 
     results["metadata/reranking_model"] = args.model_name
