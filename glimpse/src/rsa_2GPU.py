@@ -94,7 +94,7 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_index=0, save_every=50, output_csv="rsa_results.csv"):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_index=0, save_every=30, output_csv="rsa_results.csv"):
     results = []
     grouped = list(summaries.groupby(["id"]))
 
