@@ -106,7 +106,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, save, start_i
             device=device,
             candidates=group.summary.unique().tolist(),
             source_texts=group.text.unique().tolist(),
-            batch_size=32,
+            batch_size=16,
             rationality=3,
         )
         (
