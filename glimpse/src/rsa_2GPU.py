@@ -94,7 +94,7 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0, save_every=50, output_csv="rsa_results.csv"):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0, save_every=50, output_csv="rsa_results.csv", save):
     results = []
     grouped = list(summaries.groupby(["id"]))
 
@@ -140,9 +140,11 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0
         )
 
         # Ogni `save_every` iterazioni, salva i risultati parziali e libera memoria
-        if (i + 1) % save_every == 0:
+        if (i + 1) % save_every == 0 or save == True:
             append_results_to_csv(results, output_csv)
             results = []  # Libera memoria
+            save = False
+            print("file uploaded")
 
         # Salva checkpoint ogni 50 iterazioni
         if (i + 1) % 50 == 0:
@@ -159,9 +161,12 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, start_index=0
 
 def main():
     args = parse_args()
-    
+
+    save = False
     start_index, partial_results = load_checkpoint(args.checkpoint)
     print(f"Ripartendo da indice: {start_index}")
+    if start_index != 0:
+        save = True
 
 
 
@@ -190,7 +195,7 @@ def main():
     summaries = parse_summaries(args.summaries)
 
     # rerank the summaries
-    results = compute_rsa(summaries, model, tokenizer, args.device, start_index)
+    results = compute_rsa(summaries, model, tokenizer, args.device, start_index, save)
     results = {"results": results}
 
     results["metadata/reranking_model"] = args.model_name
@@ -209,16 +214,6 @@ def main():
 
     # Rimuovi il checkpoint una volta completato il processo
     Path("checkpoint.pkl").unlink(missing_ok=True)
-    
-    # Aggiunta di salvataggio in CSV
-    # Appiattiamo i risultati per il salvataggio in CSV
-    relevant_data = extract_relevant_data(results["results"])
-    results_df = pd.DataFrame(relevant_data)
-    
-    # Salvataggio del CSV
-    results_df.to_csv(Path(args.output_dir) / "rsa_results_glimpse.csv", index=False)
-
-
     
     # in case of scripted run, print the output path
     if args.scripted_run: print(output_path)
