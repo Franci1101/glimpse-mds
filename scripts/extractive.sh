@@ -9,9 +9,9 @@
 
 
 # Load the required modules
-module --quiet load miniconda/3
-module --quiet load cuda/12.1.1
-conda activate "glimpse"
+!module --quiet load miniconda/3
+!module --quiet load cuda/12.1.1
+!conda activate "glimpse"
 
 
 # Check if input file path is provided and valid
