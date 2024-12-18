@@ -130,9 +130,11 @@ def main():
     output_path_base = (
         Path(args.output_dir) / f"{args.summaries.stem}-_-base_reranked.pk"
     )
-
-    with open(output_path, "wb") as f:
-        dump(results, f)
+    output_path = "output_mega_bello.json"
+    out_res = json.dumps(results, indent=4)
+    with open(output_path, "w") as f:
+        f.write(output_path)
+       # dump(results, f)
         
     # in case of scripted run, print the output path
     if args.scripted_run: print(output_path)
