@@ -92,15 +92,13 @@ def main():
         df_old = pd.read_csv(path, index_col=0)
 
         # create the colums if they do not exist
-        for col in df.columns:
-            if col not in df_old.columns:
-                df_old[col] = float("nan")
+        for col in df_metrics.columns:
+            if col not in df.columns:
+                df[col] = float("nan")
 
         # add entry to the dataframe
-        for col in df.columns:
-            df_old[col] = df[col]
-
-        df = df_old
+        for col in df_metrics.columns:
+            df[col] = df_metrics[col]
 
     df.to_csv(path)
     print("Final DataFrame saved:")
