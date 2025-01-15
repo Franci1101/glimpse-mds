@@ -60,8 +60,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
             device=device,
             candidates=group.summary.unique().tolist(),
             source_texts=group.text.unique().tolist(),
-            #batch_size=32,
-            batch_size=16,
+            batch_size=32,
             rationality=3,
         )
         (
@@ -130,11 +129,9 @@ def main():
     output_path_base = (
         Path(args.output_dir) / f"{args.summaries.stem}-_-base_reranked.pk"
     )
-    output_path = "output_mega_bello.json"
-    out_res = json.dumps(results, indent=4)
-    with open(output_path, "w") as f:
-        f.write(output_path)
-       # dump(results, f)
+
+    with open(output_path, "wb") as f:
+        dump(results, f)
         
     # in case of scripted run, print the output path
     if args.scripted_run: print(output_path)
