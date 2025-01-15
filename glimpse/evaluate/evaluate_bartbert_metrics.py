@@ -71,7 +71,7 @@ def main():
 
     path = args.summaries
     path.parent.mkdir(parents=True, exist_ok=True)
-
+    print("inzio")
     # load the model
     df = parse_summaries(args.summaries)
     print("Input DataFrame:")
