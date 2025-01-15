@@ -74,20 +74,19 @@ def main():
 
     # load the model
     df = parse_summaries(args.summaries)
-
+    print("Input DataFrame:")
+    print(df.head())
+    print("Strat evaluation")
     metrics = evaluate_bartbert(df)
 
     # make a dataframe with the metric
-    df = pd.DataFrame(metrics)
+    df_metrics = pd.DataFrame(metrics)
 
     # Add the model name in the metrics names
-    df = df.add_prefix(f"common/")
+    df_metrics = df_metrics.add_prefix(f"common/")
 
-    # save the dataframe
-
-    # check if exists already, if it does load it and add the new columns
-
-    print(df)
+    print("Metrics DataFrame:")
+    print(df_metrics)
 
     if path.exists():
         df_old = pd.read_csv(path, index_col=0)
@@ -104,6 +103,8 @@ def main():
         df = df_old
 
     df.to_csv(path)
+    print("Final DataFrame saved:")
+    print(df)
 
 
 if __name__ == "__main__":
