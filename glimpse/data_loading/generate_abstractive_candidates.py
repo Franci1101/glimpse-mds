@@ -49,7 +49,7 @@ def parse_args():
     parser.add_argument("--dataset_path", type=Path, default="data/processed/all_reviews_2017.csv")
     parser.add_argument("--decoding_config", type=str, default="top_p_sampling", choices=GENERATION_CONFIGS.keys())
 
-    parser.add_argument("--batch_size", type=int, default=16)
+    parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--trimming", action=argparse.BooleanOptionalAction, default=True)
     
