@@ -116,13 +116,18 @@ def main():
     rows = compute_rsa(summaries, model, tokenizer, args.device)
 
     # Save the results to a CSV
+    # Verifica se la directory di output esiste, altrimenti creala
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    
+    # Salva i risultati in un file CSV
     output_csv_path = Path(args.output_dir) / f"{args.summaries.stem}-rsa_results.csv"
     df = pd.DataFrame(rows)
-
-    # save to CSV
+    
+    # Salva nel file CSV
     df.to_csv(output_csv_path, index=False)
     
     print(f"CSV saved at: {output_csv_path}")
+
 
 
 if __name__ == "__main__":
