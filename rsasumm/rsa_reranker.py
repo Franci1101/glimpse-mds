@@ -221,7 +221,7 @@ class RSAReranking:
             initital_consensuality_score,
             consensuality_scores,
         ) = self.mk_listener_dataframe(t=t)
-        top_n = 3  # Puoi cambiare questo parametro per ottenere più frasi
+        top_n = 1  # Puoi cambiare questo parametro per ottenere più frasi
         best_rsa = speaker_df.apply(lambda x: x.nlargest(top_n).index.tolist(), axis=1)
 
         best_base = initial_listener_proba.idxmax(axis=1).values
