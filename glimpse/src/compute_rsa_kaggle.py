@@ -74,19 +74,11 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
 
         for idx, summary in group.iterrows():
             row = {
-                "id": name,
-                "id_candidate": summary['id_candidate'],
-                "summary": summary['summary'],
-                "best_rsa": best_rsa,  # Add RSA value for each summary
-                "best_base": best_base,
-                "speaker_df": speaker_df.to_dict(),
-                "listener_df": listener_df.to_dict(),
-                "initial_listener": initial_listener,
-                "language_model_proba_df": language_model_proba_df,
-                "initial_consensuality_scores": initial_consensuality_scores,
-                "consensuality_scores": consensuality_scores,
-                "gold": gold,
-                "rationality": 3,  # hyperparameter
+                "id": name,  # ID del gruppo
+                "id_candidate": summary['id_candidate'],  # ID della frase candidata
+                "summary": summary['summary'],  # Il contenuto del riassunto
+                "best_rsa": best_rsa,  # RSA migliore per il riassunto
+                "gold": gold,  # La frase di riferimento
             }
             rows.append(row)
 
