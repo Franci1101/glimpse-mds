@@ -69,9 +69,18 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
 
         # Ora salva TUTTE le frasi candidate con il loro RSA
         for idx, summary in group.iterrows():
-            summary_text = summary['summary']
-            rsa_value = speaker_df.loc[summary_text] if summary_text in speaker_df.index else None  # Prende RSA per ogni frase
-
+            summary_text = summary['summary'].strip()  # Rimuove spazi extra
+        
+            # DEBUG: Controlliamo se la frase è presente in speaker_df
+            print(f"\nProcessing summary: {summary_text}")
+            print(f"Keys in speaker_df: {list(speaker_df.index)[:5]} ...")  # Mostra solo le prime 5 chiavi
+        
+            if summary_text in speaker_df.index:
+                rsa_value = speaker_df.loc[summary_text]
+            else:
+                print(f"⚠️ Warning: '{summary_text}' not found in speaker_df!")
+                rsa_value = None  # Evita errori e segnala il problema
+        
             row = {
                 "id": name,
                 "id_candidate": summary['id_candidate'],
