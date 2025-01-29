@@ -19,7 +19,7 @@ def parse_args():
 
 def parse_summaries(path: Path) -> pd.DataFrame:
     summaries = pd.read_csv(path)
-    required_columns = {"id", "id_text", "id_candidate", "summary", "text"}
+    required_columns = {"index", "id", "id_candidate", "summary", "text", "gold"}
     
     if not required_columns.issubset(summaries.columns):
         raise ValueError(f"The CSV file must have columns: {required_columns}")
