@@ -18,19 +18,14 @@ def parse_args():
     parser.add_argument("--model_name", type=str, default="google/pegasus-arxiv")
     parser.add_argument("--summaries", type=Path, default="")
     parser.add_argument("--output_dir", type=str, default="output")
-
     parser.add_argument("--filter", type=str, default=None)
-    
-    # if ran in a scripted way, the output path will be printed
     parser.add_argument("--scripted-run", action=argparse.BooleanOptionalAction, default=False)
-
     parser.add_argument("--device", type=str, default="cuda")
 
     return parser.parse_args()
 
 
 def parse_summaries(path: Path) -> pd.DataFrame:
-    
     try:
         summaries = pd.read_csv(path)
     except:
@@ -54,7 +49,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
             model,
             tokenizer,
             device=device,
-            candidates=group.summary.unique().tolist(),
+            candidates=group.summary.tolist(),  # Usa tutte le frasi candidate
             source_texts=group.text.unique().tolist(),
             batch_size=16,
             rationality=3,
@@ -72,13 +67,17 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
 
         gold = group['gold'].tolist()[0]
 
+        # Ora salva TUTTE le frasi candidate con il loro RSA
         for idx, summary in group.iterrows():
+            summary_text = summary['summary']
+            rsa_value = speaker_df.loc[summary_text] if summary_text in speaker_df.index else None  # Prende RSA per ogni frase
+
             row = {
-                "id": name,  # ID del gruppo
-                "id_candidate": summary['id_candidate'],  # ID della frase candidata
-                "summary": summary['summary'],  # Il contenuto del riassunto
-                "best_rsa": best_rsa,  # RSA migliore per il riassunto
-                "gold": gold,  # La frase di riferimento
+                "id": name,
+                "id_candidate": summary['id_candidate'],
+                "summary": summary_text,
+                "rsa": rsa_value,  # Valore RSA per ogni frase
+                "gold": gold,
             }
             rows.append(row)
 
@@ -107,19 +106,17 @@ def main():
     # rerank the summaries and collect the results
     rows = compute_rsa(summaries, model, tokenizer, args.device)
 
-    # Save the results to a CSV
     # Verifica se la directory di output esiste, altrimenti creala
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
-    
+
     # Salva i risultati in un file CSV
     output_csv_path = Path(args.output_dir) / f"{args.summaries.stem}-rsa_results.csv"
     df = pd.DataFrame(rows)
-    
+
     # Salva nel file CSV
     df.to_csv(output_csv_path, index=False)
-    
-    print(f"CSV saved at: {output_csv_path}")
 
+    print(f"CSV saved at: {output_csv_path}")
 
 
 if __name__ == "__main__":
