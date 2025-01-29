@@ -4,6 +4,9 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import argparse
 from tqdm import tqdm
 
+import sys, os.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
 from rsasumm.rsa_reranker import RSAReranking
 
 def parse_args():
