@@ -75,6 +75,13 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
             text = re.sub(r"\s+", " ", text)  # Rimuove spazi multipli
             text = re.sub(r"[^\w\s]", "", text)  # Rimuove punteggiatura e simboli strani
             return text
+
+        print("\n🔍 Speaker DF - Prime 5 chiavi:")
+        print(speaker_df.index[:5])  # Controlliamo le prime 5 frasi in speaker_df
+        
+        print("\n🔍 Tutti i testi disponibili in Speaker DF:")
+        print(list(speaker_df.index))  # Stampiamo l'intera lista delle frasi usate nel ranking
+
         
         for idx, summary in group.iterrows():
             summary_text = normalize_text(summary['summary'])  # Normalizza la frase
