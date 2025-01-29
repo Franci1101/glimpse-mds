@@ -67,38 +67,8 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
 
         gold = group['gold'].tolist()[0]
 
-        # Ora salva TUTTE le frasi candidate con il loro RSA
-        def normalize_text(text):
-            """Normalizza il testo: lowercase, rimozione caratteri speciali e normalizzazione Unicode"""
-            text = text.lower().strip()  # Lowercase e rimuove spazi extra
-            text = unicodedata.normalize("NFKD", text)  # Normalizza caratteri Unicode
-            text = re.sub(r"\s+", " ", text)  # Rimuove spazi multipli
-            text = re.sub(r"[^\w\s]", "", text)  # Rimuove punteggiatura e simboli strani
-            return text
-
-        print("\n🔍 Speaker DF - Prime 5 chiavi:")
-        print(speaker_df.index[:5])  # Controlliamo le prime 5 frasi in speaker_df
-        
-        print("\n🔍 Tutti i testi disponibili in Speaker DF:")
-        print(list(speaker_df.index))  # Stampiamo l'intera lista delle frasi usate nel ranking
-
-        
-        for idx, summary in group.iterrows():
-            summary_text = normalize_text(summary['summary'])  # Normalizza la frase
-        
-            # Normalizza anche le chiavi di speaker_df
-            speaker_df.index = speaker_df.index.map(normalize_text)
-        
-            # DEBUG: Controlliamo se la frase normalizzata è presente
-            print(f"\nProcessing summary: {summary_text}")
-            print(f"Keys in speaker_df (normalized): {list(speaker_df.index)[:5]} ...")
-        
-            if summary_text in speaker_df.index:
-                rsa_value = speaker_df.loc[summary_text]
-            else:
-                print(f"⚠️ Warning: '{summary_text}' not found in speaker_df!")
-                rsa_value = None  # Evita errori
-        
+                
+        for idx, summary in group.iterrows():               
             row = {
                 "id": name,
                 "id_candidate": summary['id_candidate'],
