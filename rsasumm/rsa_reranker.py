@@ -229,7 +229,7 @@ class RSAReranking:
         #best_rsa = speaker_df.apply(lambda row: row[row >= threshold].index.tolist(), axis=1)
 
         # Seleziona le k frasi migliori per ogni documento
-        k=3
+        k=1
         best_rsa = speaker_df.apply(lambda row: row.nlargest(k).index.tolist(), axis=1)
 
         best_base = initial_listener_proba.idxmax(axis=1).values
