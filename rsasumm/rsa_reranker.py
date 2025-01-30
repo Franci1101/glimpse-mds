@@ -226,6 +226,8 @@ class RSAReranking:
         # Estrai i riassunti migliori usando gli indici corretti
         best_summaries = [self.candidates[self.candidates.index(idx)] for idx in best_rsa]
         
+        print(speaker_df.head())  # Per vedere le prime righe del DataFrame
+        print(speaker_df.shape)
         print("\nbest_rsaaaa: ", best_rsa)
         print("\nbest_sumariessss: ", best_summaries)
 
