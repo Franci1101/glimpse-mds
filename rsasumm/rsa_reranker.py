@@ -231,6 +231,9 @@ class RSAReranking:
         # Seleziona le k frasi migliori per ogni documento
         k=1
         #best_rsa = speaker_df.apply(lambda row: row.nlargest(k).index.tolist(), axis=1)
+        
+        # Se vuoi ottenere le frasi stesse e non solo gli indici
+        frasi_selezionate = speaker_df.apply(lambda row: [row[idx] for idx in row.nlargest(k).index.tolist()], axis=1)
 
         best_base = initial_listener_proba.idxmax(axis=1).values
 
