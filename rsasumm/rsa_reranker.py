@@ -226,7 +226,8 @@ class RSAReranking:
         # Estrai i riassunti migliori usando gli indici corretti
         best_summaries = [self.candidates[self.candidates.index(idx)] for idx in best_rsa]
         
-        print("\nbest: ", best_summaries)
+        print("\nbest_rsaaaa: ", best_rsa)
+        print("\nbest_sumariessss: ", best_summaries)
 
         return (
             best_rsa,
