@@ -222,9 +222,9 @@ class RSAReranking:
             consensuality_scores,
         ) = self.mk_listener_dataframe(t=t)
 
-        print(speaker_df)  # Per vedere quali frasi vengono considerate
-        print(best_rsa)  # Per vedere quali sono state scelte
-        break;
+        print("\n",speaker_df,"\n")  # Per vedere quali frasi vengono considerate
+        print("\n",best_rsa,"\n")  # Per vedere quali sono state scelte
+        
         best_rsa = speaker_df.idxmax(axis=1).values
         
 
