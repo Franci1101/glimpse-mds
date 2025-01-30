@@ -223,8 +223,8 @@ class RSAReranking:
         ) = self.mk_listener_dataframe(t=t)
         best_rsa = speaker_df.idxmax(axis=1).values
         best_base = initial_listener_proba.idxmax(axis=1).values
-        # Estrai i riassunti migliori
-        best_summaries = [self.candidates[idx] for idx in best_rsa]
+        # Estrai i riassunti migliori usando gli indici corretti
+        best_summaries = [self.candidates[self.candidates.index(idx)] for idx in best_rsa]
         
         print("\nbest: ", best_summaries)
 
