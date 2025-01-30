@@ -222,7 +222,7 @@ class RSAReranking:
             consensuality_scores,
         ) = self.mk_listener_dataframe(t=t)
         
-        # best_rsa = speaker_df.idxmax(axis=1).values
+        best_rsa = speaker_df.idxmax(axis=1).values
         
         # Seleziona tutte le frasi con un punteggio sopra una certa soglia
         #threshold = 0.5
@@ -230,7 +230,7 @@ class RSAReranking:
 
         # Seleziona le k frasi migliori per ogni documento
         k=1
-        best_rsa = speaker_df.apply(lambda row: row.nlargest(k).index.tolist(), axis=1)
+        #best_rsa = speaker_df.apply(lambda row: row.nlargest(k).index.tolist(), axis=1)
 
         best_base = initial_listener_proba.idxmax(axis=1).values
 
