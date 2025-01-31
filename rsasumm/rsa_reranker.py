@@ -225,8 +225,8 @@ class RSAReranking:
         #top_k = 3  # Numero di frasi migliori da selezionare per recensione
         #best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
 
-        percentage = 0.08
-        best_rsa = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
+        #percentage = 0.08
+        #best_rsa = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
         
 
         best_base = initial_listener_proba.idxmax(axis=1).values
@@ -238,6 +238,31 @@ class RSAReranking:
         #print(speaker_df.shape)
         #print("\nbest_rsaaaa: ", best_rsa)
         #print("\nbest_sumariessss: ", best_summaries)
+
+        # Imposta la percentuale desiderata
+        percentage = 0.08
+        
+        # Calcola quante frasi selezionare
+        total_phrases = len(speaker_df)  # Numero totale di frasi
+        num_selected = max(1, round(total_phrases * percentage))  # Numero di frasi da selezionare
+        
+        # Inizializza una lista per le frasi finali
+        best_rsa = []
+        
+        # Itera su ogni recensione e prendi almeno una frase da ciascuna
+        for _, group in speaker_df.groupby('review_id'):  # Supponendo che 'review_id' identifichi le recensioni
+            best_rsa.append(group.nlargest(1, 'rsa_score').index.tolist())  # Seleziona la migliore frase per ogni recensione
+        
+        # Calcola il numero rimanente di frasi da selezionare
+        remaining_count = num_selected - len(best_rsa)
+        
+        # Aggiungi le migliori frasi globali per raggiungere il numero desiderato
+        if remaining_count > 0:
+            best_rsa.extend(
+                speaker_df.drop([idx for sublist in best_rsa for idx in sublist])  # Rimuovi le frasi già selezionate
+                .nlargest(remaining_count, 'rsa_score')
+                .index.tolist()
+            )
 
         return (
             best_rsa,
