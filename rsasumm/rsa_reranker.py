@@ -233,6 +233,7 @@ class RSAReranking:
         
         # Unisci le due liste e assicurati che i risultati siano unici
         best_rsa = [list(set(best + additional)) for best, additional in zip(best_rsa1, best_rsa2)]
+
         
         # Ora 'final_best_rsa' contiene la migliore frase + altre frasi migliori, senza duplicati
 
