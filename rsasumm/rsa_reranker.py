@@ -221,15 +221,19 @@ class RSAReranking:
             initital_consensuality_score,
             consensuality_scores,
         ) = self.mk_listener_dataframe(t=t)
-        best_rsa = speaker_df.idxmax(axis=1).values
+        #best_rsa = speaker_df.idxmax(axis=1).values
+        top_k = 3  # Numero di frasi migliori da selezionare per recensione
+        best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
+
         best_base = initial_listener_proba.idxmax(axis=1).values
         # Estrai i riassunti migliori usando gli indici corretti
-        best_summaries = [self.candidates[self.candidates.index(idx)] for idx in best_rsa]
+        best_summaries = [[self.candidates[idx] for idx in indices] for indices in best_rsa]
+
         
-        print(speaker_df.head())  # Per vedere le prime righe del DataFrame
-        print(speaker_df.shape)
-        print("\nbest_rsaaaa: ", best_rsa)
-        print("\nbest_sumariessss: ", best_summaries)
+        #print(speaker_df.head())  # Per vedere le prime righe del DataFrame
+        #print(speaker_df.shape)
+        #print("\nbest_rsaaaa: ", best_rsa)
+        #print("\nbest_sumariessss: ", best_summaries)
 
         return (
             best_rsa,
