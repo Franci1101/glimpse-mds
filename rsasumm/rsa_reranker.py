@@ -231,8 +231,8 @@ class RSAReranking:
         percentage = 0.08
         best_rsa2 = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
         # Se best_rsa1 è una lista di stringhe, la trasformiamo in una lista di liste di stringhe
-        if isinstance(best_rsa1, list) and isinstance(best_rsa1[0], str):
-            best_rsa1 = [[sentence] for sentence in best_rsa1]
+        # Assicurati che best_rsa1 sia una lista di liste di stringhe
+        best_rsa1 = [[sentence] for sentence in best_rsa1]
         print("best_rsa1:", best_rsa1)
         print("best_rsa2:", best_rsa2)
 
