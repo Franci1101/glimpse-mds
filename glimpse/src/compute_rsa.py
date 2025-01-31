@@ -54,9 +54,6 @@ def parse_summaries(path: Path) -> pd.DataFrame:
 def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
     results = []
     for name, group in tqdm(summaries.groupby(["id"])):
-        print(f"Processing document with id {name}")
-        print("Group contents:")
-        print(group)
         rsa_reranker = RSAReranking(
             model,
             tokenizer,
