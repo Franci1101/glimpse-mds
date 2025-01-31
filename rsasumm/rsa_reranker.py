@@ -250,7 +250,8 @@ class RSAReranking:
         best_rsa = []
 
         print(speaker_df.shape)
-        print(speaker_df.rows)
+        print(speaker_df.columns)
+        print("olaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ",speaker_df.head())
         # Itera su ogni recensione e prendi almeno una frase da ciascuna
         for _, group in speaker_df.groupby('review_id'):  # Supponendo che 'review_id' identifichi le recensioni
             best_rsa.append(group.nlargest(1, 'rsa_score').index.tolist())  # Seleziona la migliore frase per ogni recensione
