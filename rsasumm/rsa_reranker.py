@@ -227,7 +227,7 @@ class RSAReranking:
 
         best_base = initial_listener_proba.idxmax(axis=1).values
         # Estrai i riassunti migliori usando gli indici corretti
-        best_summaries = [[self.candidates[idx] for idx in indices] for indices in best_rsa]
+        #best_summaries = [[self.candidates[idx] for idx in indices] for indices in best_rsa]
 
         
         #print(speaker_df.head())  # Per vedere le prime righe del DataFrame
