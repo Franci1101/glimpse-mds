@@ -225,7 +225,7 @@ class RSAReranking:
         #top_k = 3  # Numero di frasi migliori da selezionare per recensione
         #best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
 
-        percentage = 0.3
+        percentage = 0.2
         best_rsa = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
         
 
