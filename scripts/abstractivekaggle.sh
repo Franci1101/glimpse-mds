@@ -21,8 +21,5 @@ else
 fi
 
 # Calcola i punteggi RSA basati sui riassunti generati
-rsa_scores=$(python glimpse/src/compute_rsa.py --summaries $candidates | tail -n 1)
+rsa_scores=$(python glimpse/src/compute_rsa_abstractive.py --summaries $candidates | tail -n 1)
 
-# Mostra il risultato
-echo "Riassunti generati: $candidates"
-echo "Punteggi RSA calcolati: $rsa_scores"
