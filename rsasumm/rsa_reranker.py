@@ -225,19 +225,19 @@ class RSAReranking:
         #best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
 
         # Primo passaggio: prendi la migliore frase per ogni recensione
-        best_rsa1 = speaker_df.idxmax(axis=1).values
+        best_rsa = speaker_df.idxmax(axis=1).values
         
         # Secondo passaggio: aggiungi altre frasi tra le migliori basate sulla percentuale
         percentage = 0.08
         best_rsa2 = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
         # Se best_rsa1 è una lista di stringhe, la trasformiamo in una lista di liste di stringhe
         # Assicurati che best_rsa1 sia una lista di liste di stringhe
-        best_rsa1 = [[sentence] for sentence in best_rsa1]
-        print("best_rsa1:", best_rsa1)
-        print("best_rsa2:", best_rsa2)
+        #best_rsa1 = [[sentence] for sentence in best_rsa1]
+        #print("best_rsa1:", best_rsa1)
+        #print("best_rsa2:", best_rsa2)
 
         # Ora puoi procedere con l'unione delle due liste
-        best_rsa = [list(st(best + additional)) for best, additional in zip(best_rsa1, best_rsa2)]
+        #best_rsa = [list(st(best + additional)) for best, additional in zip(best_rsa1, best_rsa2)]
 
         
         # Ora 'final_best_rsa' contiene la migliore frase + altre frasi migliori, senza duplicati
