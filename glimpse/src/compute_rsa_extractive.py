@@ -10,7 +10,7 @@ from pickle import dump
 import sys, os.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from rsasumm.rsa_reranker import RSAReranking
+from rsasumm.rsa_reranker_extractive import RSAReranking
 
 
 DESC = """
