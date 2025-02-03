@@ -22,15 +22,12 @@ def parse_args():
     parser.add_argument("--model_name", type=str, default="google/pegasus-arxiv")
     parser.add_argument("--summaries", type=Path, default="")
     parser.add_argument("--output_dir", type=str, default="output")
-
+    parser.add_argument("--checkpoint", type=Path, default=None)  # <-- Aggiunto il checkpoint
     parser.add_argument("--filter", type=str, default=None)
-    
-    # if ran in a scripted way, the output path will be printed
     parser.add_argument("--scripted-run", action=argparse.BooleanOptionalAction, default=False)
-
     parser.add_argument("--device", type=str, default="cuda")
-
     return parser.parse_args()
+
 
 
 def parse_summaries(path: Path) -> pd.DataFrame:
@@ -51,18 +48,21 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, output_dir, save_every=20):
-    results = []
-    save_path = Path(output_dir) / "partial_rsa_results.pk"
+import pickle
 
-    # Se esiste già un file con risultati parziali, lo carica
-    if save_path.exists():
-        with open(save_path, "rb") as f:
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, checkpoint=None, save_every=20):
+    results = []
+    
+    # Se il checkpoint è passato, lo carica
+    if checkpoint and checkpoint.exists():
+        with open(checkpoint, "rb") as f:
             results = pickle.load(f)
-        processed_ids = {r["id"] for r in results}  # Set di ID già elaborati
-        print(f"Caricati {len(results)} risultati salvati. Riprendo da dove si era fermato...")
+        processed_ids = {r["id"] for r in results}  # Set degli ID già elaborati
+        print(f"🔄 Checkpoint trovato: {len(results)} risultati caricati. Riprendo da dove si era fermato...")
     else:
         processed_ids = set()
+
+    save_path = checkpoint if checkpoint else Path(output_dir) / "partial_rsa_results.pk"
 
     for i, (name, group) in enumerate(tqdm(summaries.groupby(["id"]))):
         if name in processed_ids:
@@ -111,9 +111,10 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, output_dir, s
         if (i + 1) % save_every == 0:
             with open(save_path, "wb") as f:
                 pickle.dump(results, f)
-            print(f"Salvati {len(results)} risultati parziali.")
+            print(f"💾 Checkpoint salvato con {len(results)} risultati.")
 
     return results
+
 
 
 def main():
