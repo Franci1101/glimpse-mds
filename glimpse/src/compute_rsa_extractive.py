@@ -107,8 +107,10 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
         )
 
         # Salva ogni `save_every` iterazioni
-        print("i=",i)
         if (i + 1) % save_every == 0:
+            # Assicurati che la cartella di output esista
+            Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+            
             with open(save_path, "wb") as f:
                 pickle.dump(results, f)
             print(f"💾 Checkpoint salvato con {len(results)} risultati.")
