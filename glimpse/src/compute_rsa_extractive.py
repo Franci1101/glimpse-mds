@@ -1,5 +1,5 @@
 from pathlib import Path
-from IPython.display import FileLink
+from IPython.display import display, FileLink
 import pandas as pd
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, PegasusTokenizer
 import argparse
