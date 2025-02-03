@@ -15,7 +15,7 @@ fi
 candidates=$(python glimpse/data_loading/generate_extractive_candidates.py --dataset_path "$dataset_path" --scripted-run | tail -n 1)
 
 # Calcola i punteggi RSA
-rsa_scores=$(python glimpse/src/compute_rsa.py --summaries $candidates | tail -n 1)
+rsa_scores=$(python glimpse/src/compute_rsa_extractive.py --summaries $candidates | tail -n 1)
 
 # Mostra i risultati
 echo "Generated summaries: $candidates"
