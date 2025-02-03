@@ -49,7 +49,7 @@ def parse_summaries(path: Path) -> pd.DataFrame:
 
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, checkpoint=None, save_every=20):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpoint=None, save_every=20):
     results = []
     
     # Se il checkpoint è passato, lo carica
@@ -139,7 +139,7 @@ def main():
     summaries = parse_summaries(args.summaries)
 
     # rerank the summaries
-    results = compute_rsa(summaries, model, tokenizer, args.device)
+    results = compute_rsa(summaries, model, tokenizer, args.device, args)
     results = {"results": results}
 
     results["metadata/reranking_model"] = args.model_name
