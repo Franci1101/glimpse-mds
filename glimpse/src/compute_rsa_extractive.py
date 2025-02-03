@@ -4,7 +4,7 @@ import pandas as pd
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, PegasusTokenizer
 import argparse
 from tqdm import tqdm
-
+import pickle
 from pickle import dump
 
 import sys, os.path
