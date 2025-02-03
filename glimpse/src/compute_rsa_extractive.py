@@ -63,7 +63,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, checkpoint=No
 
     save_path = checkpoint if checkpoint else Path(output_dir) / "partial_rsa_results.pk"
 
-    for i, (name, group) in enumerate(tqdm(summaries.groupby(["id"]))):
+    for i, (name, group) in enumerate((summaries.groupby(["id"]))):
         if name in processed_ids:
             continue  # Salta gli ID già elaborati
 
