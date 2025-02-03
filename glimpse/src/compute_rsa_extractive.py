@@ -107,6 +107,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, checkpoint=No
         )
 
         # Salva ogni `save_every` iterazioni
+        print("i=",i)
         if (i + 1) % save_every == 0:
             with open(save_path, "wb") as f:
                 pickle.dump(results, f)
