@@ -51,9 +51,23 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, output_dir, save_every=20):
     results = []
-    for name, group in tqdm(summaries.groupby(["id"])):
+    save_path = Path(output_dir) / "partial_rsa_results.pk"
+
+    # Se esiste già un file con risultati parziali, lo carica
+    if save_path.exists():
+        with open(save_path, "rb") as f:
+            results = pickle.load(f)
+        processed_ids = {r["id"] for r in results}  # Set di ID già elaborati
+        print(f"Caricati {len(results)} risultati salvati. Riprendo da dove si era fermato...")
+    else:
+        processed_ids = set()
+
+    for i, (name, group) in enumerate(tqdm(summaries.groupby(["id"]))):
+        if name in processed_ids:
+            continue  # Salta gli ID già elaborati
+
         rsa_reranker = RSAReranking(
             model,
             tokenizer,
@@ -79,19 +93,25 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
         results.append(
             {
                 "id": name,
-                "best_rsa": best_rsa,  # best speaker score
-                "best_base": best_base,  # naive baseline
-                "speaker_df": speaker_df,  # all speaker results
-                "listener_df": listener_df,  # all listener results (chances of guessing correctly)
+                "best_rsa": best_rsa,
+                "best_base": best_base,
+                "speaker_df": speaker_df,
+                "listener_df": listener_df,
                 "initial_listener": initial_listener,
                 "language_model_proba_df": language_model_proba_df,
                 "initial_consensuality_scores": initial_consensuality_scores,
-                "consensuality_scores": consensuality_scores,  # uniqueness scores
+                "consensuality_scores": consensuality_scores,
                 "gold": gold,
-                "rationality": 3,  # hyperparameter
-                "text_candidates" : group
+                "rationality": 3,
+                "text_candidates": group
             }
         )
+
+        # Salva ogni `save_every` iterazioni
+        if (i + 1) % save_every == 0:
+            with open(save_path, "wb") as f:
+                pickle.dump(results, f)
+            print(f"Salvati {len(results)} risultati parziali.")
 
     return results
 
