@@ -48,7 +48,6 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-import pickle
 
 def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, checkpoint=None, save_every=20):
     results = []
