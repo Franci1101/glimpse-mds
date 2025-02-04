@@ -1,11 +1,11 @@
 from pathlib import Path
+
 import pandas as pd
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, PegasusTokenizer
 import argparse
 from tqdm import tqdm
-import pickle
+
 from pickle import dump
-import gc
 
 import sys, os.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -22,12 +22,15 @@ def parse_args():
     parser.add_argument("--model_name", type=str, default="google/pegasus-arxiv")
     parser.add_argument("--summaries", type=Path, default="")
     parser.add_argument("--output_dir", type=str, default="output")
-    parser.add_argument("--checkpoint", type=Path, default=None)  # <-- Aggiunto il checkpoint
-    parser.add_argument("--filter", type=str, default=None)
-    parser.add_argument("--scripted-run", action=argparse.BooleanOptionalAction, default=False)
-    parser.add_argument("--device", type=str, default="cuda")
-    return parser.parse_args()
 
+    parser.add_argument("--filter", type=str, default=None)
+    
+    # if ran in a scripted way, the output path will be printed
+    parser.add_argument("--scripted-run", action=argparse.BooleanOptionalAction, default=False)
+
+    parser.add_argument("--device", type=str, default="cuda")
+
+    return parser.parse_args()
 
 
 def parse_summaries(path: Path) -> pd.DataFrame:
@@ -48,29 +51,9 @@ def parse_summaries(path: Path) -> pd.DataFrame:
     return summaries
 
 
-
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpoint=None, save_every=10):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
     results = []
-    
-    if checkpoint and checkpoint.exists():
-        print(f"✅ Trovato checkpoint: {checkpoint}")
-        with open(checkpoint, "rb") as f:
-            results = pickle.load(f)
-        processed_ids = {r["id"] for r in results}  # Set degli ID già elaborati
-        print(f"🔄 Checkpoint caricato: {len(results)} risultati trovati.")
-    else:
-        print(f"❌ Nessun checkpoint trovato in {checkpoint}, riparto da zero.")
-        processed_ids = set()
-
-
-    # Definisci un nuovo file di output per evitare di sovrascrivere il file di input
-    save_path = Path(args.output_dir) / "checkpoint_output.pk"
-
-    for i, (name, group) in enumerate(tqdm(summaries.groupby(["id"]))):
-        if name in processed_ids:
-            print("salta: ", i, " ",name)
-            continue  # Salta gli ID già elaborati
-
+    for name, group in tqdm(summaries.groupby(["id"])):
         rsa_reranker = RSAReranking(
             model,
             tokenizer,
@@ -96,34 +79,21 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
         results.append(
             {
                 "id": name,
-                "best_rsa": best_rsa,
-                #"best_base": best_base,
-                #"speaker_df": speaker_df,
-                #"listener_df": listener_df,
-                #"initial_listener": initial_listener,
-                #"language_model_proba_df": language_model_proba_df,
-                #"initial_consensuality_scores": initial_consensuality_scores,
-                #"consensuality_scores": consensuality_scores,
+                "best_rsa": best_rsa,  # best speaker score
+                "best_base": best_base,  # naive baseline
+                "speaker_df": speaker_df,  # all speaker results
+                "listener_df": listener_df,  # all listener results (chances of guessing correctly)
+                "initial_listener": initial_listener,
+                "language_model_proba_df": language_model_proba_df,
+                "initial_consensuality_scores": initial_consensuality_scores,
+                "consensuality_scores": consensuality_scores,  # uniqueness scores
                 "gold": gold,
-                #"rationality": 3,
-                #"text_candidates": group
+                "rationality": 3,  # hyperparameter
+                "text_candidates" : group
             }
         )
 
-        # Salva ogni `save_every` iterazioni
-        if (i + 1) % save_every == 0:
-            # Assicurati che la cartella di output esista
-            Path(args.output_dir).mkdir(parents=True, exist_ok=True)
-            
-            with open(save_path, "wb") as f:
-                pickle.dump(results, f)
-            print(f"💾 Checkpoint salvato con {len(results)} risultati.")
-            del results  # Svuota la memoria
-            gc.collect()  # Forza la garbage collection
-            results = []
-
     return results
-
 
 
 def main():
@@ -146,7 +116,7 @@ def main():
     summaries = parse_summaries(args.summaries)
 
     # rerank the summaries
-    results = compute_rsa(summaries, model, tokenizer, args.device, args, args.checkpoint)
+    results = compute_rsa(summaries, model, tokenizer, args.device)
     results = {"results": results}
 
     results["metadata/reranking_model"] = args.model_name
