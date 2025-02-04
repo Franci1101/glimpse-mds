@@ -63,7 +63,8 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
         processed_ids = set()
 
 
-    save_path = checkpoint if checkpoint else Path(args.output_dir) / "partial_rsa_results.pk"
+    # Definisci un nuovo file di output per evitare di sovrascrivere il file di input
+    save_path = Path(args.output_dir) / "checkpoint_output.pk"
 
     for i, (name, group) in enumerate(tqdm(summaries.groupby(["id"]))):
         if name in processed_ids:
