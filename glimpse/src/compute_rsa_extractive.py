@@ -67,6 +67,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
 
     for i, (name, group) in enumerate(tqdm(summaries.groupby(["id"]))):
         if name in processed_ids:
+            print("salta: ", name)
             continue  # Salta gli ID già elaborati
 
         rsa_reranker = RSAReranking(
