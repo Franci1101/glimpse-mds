@@ -52,14 +52,16 @@ def parse_summaries(path: Path) -> pd.DataFrame:
 def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpoint=None, save_every=20):
     results = []
     
-    # Se il checkpoint è passato, lo carica
     if checkpoint and checkpoint.exists():
+        print(f"✅ Trovato checkpoint: {checkpoint}")
         with open(checkpoint, "rb") as f:
             results = pickle.load(f)
         processed_ids = {r["id"] for r in results}  # Set degli ID già elaborati
-        print(f"🔄 Checkpoint trovato: {len(results)} risultati caricati. Riprendo da dove si era fermato...")
+        print(f"🔄 Checkpoint caricato: {len(results)} risultati trovati.")
     else:
+        print(f"❌ Nessun checkpoint trovato in {checkpoint}, riparto da zero.")
         processed_ids = set()
+
 
     save_path = checkpoint if checkpoint else Path(args.output_dir) / "partial_rsa_results.pk"
 
