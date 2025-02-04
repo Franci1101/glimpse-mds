@@ -97,16 +97,16 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
             {
                 "id": name,
                 "best_rsa": best_rsa,
-                "best_base": best_base,
-                "speaker_df": speaker_df,
-                "listener_df": listener_df,
-                "initial_listener": initial_listener,
-                "language_model_proba_df": language_model_proba_df,
-                "initial_consensuality_scores": initial_consensuality_scores,
-                "consensuality_scores": consensuality_scores,
+                #"best_base": best_base,
+                #"speaker_df": speaker_df,
+                #"listener_df": listener_df,
+                #"initial_listener": initial_listener,
+                #"language_model_proba_df": language_model_proba_df,
+                #"initial_consensuality_scores": initial_consensuality_scores,
+                #"consensuality_scores": consensuality_scores,
                 "gold": gold,
-                "rationality": 3,
-                "text_candidates": group
+                #"rationality": 3,
+                #"text_candidates": group
             }
         )
 
