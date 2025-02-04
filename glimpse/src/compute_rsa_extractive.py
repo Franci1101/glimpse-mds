@@ -1,5 +1,4 @@
 from pathlib import Path
-from IPython.display import display, FileLink
 import pandas as pd
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, PegasusTokenizer
 import argparse
@@ -117,8 +116,6 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
             with open(save_path, "wb") as f:
                 pickle.dump(results, f)
             print(f"💾 Checkpoint salvato con {len(results)} risultati.")
-            # Aggiungi il link per scaricare il checkpoint
-            display(FileLink(str(save_path)))  # Crea il link di salvataggio
 
     return results
 
