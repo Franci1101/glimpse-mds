@@ -144,7 +144,7 @@ def main():
     summaries = parse_summaries(args.summaries)
 
     # rerank the summaries
-    results = compute_rsa(summaries, model, tokenizer, args.device, args)
+    results = compute_rsa(summaries, model, tokenizer, args.device, args, args.checkpoint)
     results = {"results": results}
 
     results["metadata/reranking_model"] = args.model_name
