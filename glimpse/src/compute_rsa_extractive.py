@@ -5,6 +5,7 @@ import argparse
 from tqdm import tqdm
 import pickle
 from pickle import dump
+import gc
 
 import sys, os.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -116,6 +117,9 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
             with open(save_path, "wb") as f:
                 pickle.dump(results, f)
             print(f"💾 Checkpoint salvato con {len(results)} risultati.")
+            del results  # Svuota la memoria
+            gc.collect()  # Forza la garbage collection
+            results = []
 
     return results
 
