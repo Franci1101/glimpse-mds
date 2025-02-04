@@ -49,7 +49,7 @@ def parse_summaries(path: Path) -> pd.DataFrame:
 
 
 
-def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpoint=None, save_every=20):
+def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpoint=None, save_every=10):
     results = []
     
     if checkpoint and checkpoint.exists():
@@ -67,7 +67,7 @@ def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device, args, checkpo
 
     for i, (name, group) in enumerate(tqdm(summaries.groupby(["id"]))):
         if name in processed_ids:
-            print("salta: ", name)
+            print("salta: ", i, " ",name)
             continue  # Salta gli ID già elaborati
 
         rsa_reranker = RSAReranking(
