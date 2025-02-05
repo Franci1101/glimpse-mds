@@ -221,40 +221,21 @@ class RSAReranking:
             initital_consensuality_score,
             consensuality_scores,
         ) = self.mk_listener_dataframe(t=t)
-        #top_k = 3  # Numero di frasi migliori da selezionare per recensione
-        #best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
+        
+        top_k = 3  # Numero di frasi migliori da selezionare per recensione
+        best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
 
         # Primo passaggio: prendi la migliore frase per ogni recensione
         #best_rsa = speaker_df.idxmax(axis=1).values
         
         # Secondo passaggio: aggiungi altre frasi tra le migliori basate sulla percentuale
-        percentage = 0.08
-        best_rsa = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
-        # Se best_rsa1 è una lista di stringhe, la trasformiamo in una lista di liste di stringhe
-        # Assicurati che best_rsa1 sia una lista di liste di stringhe
-        #best_rsa1 = [[sentence] for sentence in best_rsa1]
-        #print("best_rsa1:", best_rsa1)
-        #print("best_rsa2:", best_rsa2)
-
-        # Ora puoi procedere con l'unione delle due liste
-        #best_rsa = [list(st(best + additional)) for best, additional in zip(best_rsa1, best_rsa2)]
-
-        
-        # Ora 'final_best_rsa' contiene la migliore frase + altre frasi migliori, senza duplicati
-
-        
+        #percentage = 0.08
+        #best_rsa = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
+    
+       
 
         best_base = initial_listener_proba.idxmax(axis=1).values
-        # Estrai i riassunti migliori usando gli indici corretti
-        #best_summaries = [[self.candidates[idx] for idx in indices] for indices in best_rsa]
-
-        
-        #print(speaker_df.head())  # Per vedere le prime righe del DataFrame
-        #print(speaker_df.shape)
-        #print("\nbest_rsaaaa: ", best_rsa)
-        #print("\nbest_sumariessss: ", best_summaries)
-
-       
+      
 
         return (
             best_rsa,
