@@ -222,20 +222,13 @@ class RSAReranking:
             consensuality_scores,
         ) = self.mk_listener_dataframe(t=t)
 
-        print("Numero di frasi disponibili per ogni testo:")
-        print(speaker_df.apply(len, axis=1))
 
         
-        top_k = 25  # Numero di frasi migliori da selezionare per recensione
+        top_k = 15  # Numero di frasi migliori da selezionare per recensione
         best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
 
         # Primo passaggio: prendi la migliore frase per ogni recensione
-        #best_rsa = speaker_df.idxmax(axis=1).values
-        
-        # Secondo passaggio: aggiungi altre frasi tra le migliori basate sulla percentuale
-        #percentage = 0.08
-        #best_rsa = speaker_df.apply(lambda x: x.nlargest(max(1, round(len(x) * percentage))).index.tolist(), axis=1).values
-    
+        #best_rsa = speaker_df.idxmax(axis=1).values   
        
 
         best_base = initial_listener_proba.idxmax(axis=1).values
