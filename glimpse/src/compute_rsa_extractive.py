@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import sys
 import pandas as pd
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, PegasusTokenizer
 import argparse
@@ -53,9 +53,9 @@ def parse_summaries(path: Path) -> pd.DataFrame:
 
 def compute_rsa(summaries: pd.DataFrame, model, tokenizer, device):
     results = []
-    #for name, group in tqdm(summaries.groupby(["id"])):
-    for name, group in summaries.groupby(["id"]):
+    for name, group in tqdm(summaries.groupby(["id"])):
         print(f"ID: {name}, Numero di candidati: {len(group.summary.unique())}")
+        sys.stdout.flush()
         rsa_reranker = RSAReranking(
             model,
             tokenizer,
