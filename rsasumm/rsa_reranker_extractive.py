@@ -221,6 +221,10 @@ class RSAReranking:
             initital_consensuality_score,
             consensuality_scores,
         ) = self.mk_listener_dataframe(t=t)
+
+        print("Numero di frasi disponibili per ogni testo:")
+        print(speaker_df.apply(len, axis=1))
+
         
         top_k = 25  # Numero di frasi migliori da selezionare per recensione
         best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
