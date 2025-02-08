@@ -223,8 +223,10 @@ class RSAReranking:
         ) = self.mk_listener_dataframe(t=t)
 
 
-        
-        top_k = 20  # Numero di frasi migliori da selezionare per recensione
+        num_candidate_sentences = speaker_df.apply(lambda x: len(x.dropna()), axis=1)
+        top_k = 100  # Numero di frasi migliori da selezionare per recensione
+        if top_k * 3 > num_candidate_sentences:
+            tpo_k = num_candidate_sentences/3
         #best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
         best_rsa = speaker_df.apply(lambda x: x.nlargest(min(top_k, len(x.dropna()))).index.tolist(), axis=1).values
 
