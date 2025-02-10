@@ -224,7 +224,7 @@ class RSAReranking:
 
 
        
-        top_k = 10  # Numero massimo di frasi da selezionare per recensione
+        top_k = 5  # Numero massimo di frasi da selezionare per recensione
 
         best_rsa = speaker_df.apply(lambda x: x.nlargest(top_k).index.tolist(), axis=1).values
 
