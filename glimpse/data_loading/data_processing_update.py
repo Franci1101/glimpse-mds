@@ -27,7 +27,7 @@ def process_file(input_path, output_path):
     sub_dataset.rename(columns={"review": "text", "metareview": "gold"}, inplace=True)
     
     sub_dataset.to_csv(output_path, index=False)
-    print(f"✅ Cleaned dataset saved to {output_path}")
+    print(f"Cleaned dataset saved to {output_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Cleans reviews in a CSV file")
