@@ -126,7 +126,7 @@ def main():
     # make the output directory if it does not exist
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     #output_path = Path(args.output_dir) / f"{args.summaries.stem}-_-r3-_-rsa_reranked-{args.model_name.replace('/', '-')}.pk"
-    output_path = Path(args.output_dir) / "outputAbstarctive.pk"
+    output_path = Path(args.output_dir) / "outputAbstractive.pk"
 
     output_path_base = (
         Path(args.output_dir) / f"{args.summaries.stem}-_-base_reranked.pk"
