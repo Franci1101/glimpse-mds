@@ -125,10 +125,12 @@ def main():
     # save the summaries
     # make the output directory if it does not exist
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
-    output_path = Path(args.output_dir) / f"{args.summaries.stem}-_-r3-_-rsa_reranked-{args.model_name.replace('/', '-')}.pk"
+    output_path = Path(args.output_dir) / "outputExtractive.pk"
+    #output_path = Path(args.output_dir) / f"{args.summaries.stem}-_-r3-_-rsa_reranked-{args.model_name.replace('/', '-')}.pk"
     output_path_base = (
         Path(args.output_dir) / f"{args.summaries.stem}-_-base_reranked.pk"
     )
+
 
     with open(output_path, "wb") as f:
         dump(results, f)
