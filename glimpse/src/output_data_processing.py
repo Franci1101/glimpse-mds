@@ -38,8 +38,14 @@ def process_rsa(file_path, output_csv="summaries.csv"):
         
        # Create a unique summary by concatenating the candidates
         #generated_summary = " ".join(str(sentence).replace("\n", "").replace(";", ",") for sentence in best_rsa_value)
-        generated_summary = " ".join(str(sentence).strip().replace("\n", "").replace(";", ",") for sentence in best_rsa_value)
+        #generated_summary = " ".join(str(sentence).strip().replace("\n", "").replace(";", ",") for sentence in best_rsa_value)
 
+        import re
+
+        generated_summary = " ".join(
+            re.sub(r"^\['|'\]$", "", str(sentence).strip()).replace("\n", "").replace(";", ",") 
+            for sentence in best_rsa_value
+        )
 
 
         #generated_summary = " ".join(sentence.replace("\n", "").replace(";", ",") for sentence in best_rsa_value)
