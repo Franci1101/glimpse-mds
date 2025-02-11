@@ -19,12 +19,17 @@ def process_file(input_path, output_path):
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
     dataset = pd.read_csv(input_path, sep=",")
-    sub_dataset = dataset[['id', 'review', 'metareview']].copy()
+    
+    # Controllo se le colonne corrette esistono già
+    if "text" in dataset.columns and "gold" in dataset.columns:
+        sub_dataset = dataset[['id', 'text', 'gold']].copy()
+    else:
+        # Se non esistono, assume che siano chiamate "review" e "metareview"
+        sub_dataset = dataset[['id', 'review', 'metareview']].copy()
+        sub_dataset.rename(columns={"review": "text", "metareview": "gold"}, inplace=True)
 
-    sub_dataset['review'] = sub_dataset['review'].apply(clean_text)
-    sub_dataset['metareview'] = sub_dataset['metareview'].apply(clean_text)
-
-    sub_dataset.rename(columns={"review": "text", "metareview": "gold"}, inplace=True)
+    sub_dataset['text'] = sub_dataset['text'].apply(clean_text)
+    sub_dataset['gold'] = sub_dataset['gold'].apply(clean_text)
     
     sub_dataset.to_csv(output_path, index=False)
     print(f"Cleaned dataset saved to {output_path}")
