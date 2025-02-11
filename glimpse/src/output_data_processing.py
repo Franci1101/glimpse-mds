@@ -47,6 +47,11 @@ def process_rsa(file_path, output_csv="summaries.csv"):
             "summary": generated_summary,
         })
 
+    # Ensure output directory exists
+    output_dir = os.path.dirname(output_csv)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
     # Save the results in a CSV file with columns `gold` and `summary`
     df_summaries = pd.DataFrame(summaries)
     df_summaries.to_csv(output_csv, index=False)
