@@ -1,17 +1,7 @@
 #!/bin/bash
-#SBATCH --partition=main                                 # Ask for unkillable job
-#SBATCH --gres=gpu:1
-#SBATCH --mem=10G                                        # Ask for 10 GB of RAM
-#SBATCH --time=2:00:00                                   # The job will run for 3 hours
-#SBATCH --output=./logs/abstractive_out.txt
-#SBATCH --error=./logs/abstractive_error.txt
-#SBATCH -c 2
 
-
-# Load the required modules
-module --quiet load miniconda/3
-module --quiet load cuda/12.1.1
-conda activate "glimpse"
+# Kaggle non supporta module e Conda. Usiamo pip per installare i pacchetti necessari.
+pip install tensorflow torch scikit-learn --quiet
 
 # Check if input file path is provided and valid
 if [ -z "$1" ] || [ ! -f "$1" ]; then
