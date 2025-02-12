@@ -10,7 +10,7 @@ def clean_summary(input_file, output_file):
 
     # Salva il file pulito
     df.to_csv(output_file, index=False)
-    print(f"File pulito salvato come {output_file}")
+    print(f"Clean file saved as {output_file}")
 
 if __name__ == "__main__":
     # Crea il parser per gli argomenti da riga di comando
