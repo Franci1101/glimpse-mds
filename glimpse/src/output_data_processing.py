@@ -49,7 +49,7 @@ def process_rsa(file_path, output_csv="summaries.csv"):
 
         
         # Pulisce la colonna 'summary' estraendo solo il testo
-        generated_summary = generated_summary.str.extract(r"\[list\(\['(.*)'\]\)\]")
+        generated_summary = generated_summary.extract(r"\[list\(\['(.*)'\]\)\]")
 
         #generated_summary = " ".join(sentence.replace("\n", "").replace(";", ",") for sentence in best_rsa_value)
         gold_summary = gold_summary.replace(";", ",")
