@@ -34,10 +34,10 @@ def process_file(input_file, output_file):
         num_final_sentences = len(unique_sentences)
         summary_text = clean_text(" ".join(unique_sentences))
         
-        data.append([id_value, summary_text, gold_text])
+        data.append([id_value, gold_text, summary_text])
 
     # Create DataFrame and save to CSV
-    df = pd.DataFrame(data, columns=["id", "summary", "gold"])
+    df = pd.DataFrame(data, columns=["id", "gold", "summary"])
     df.to_csv(output_file, index=False)
 
     print(f"CSV file saved: {output_file}")
